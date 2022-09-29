@@ -14,16 +14,83 @@ namespace DeviceManagement_WebApp.Controllers
     public class DevicesController : Controller
     {
         private readonly ConnectedOfficeContext _context;
+        DevicesRepository devicesRepo;
 
         public DevicesController(ConnectedOfficeContext context)
         {
             _context = context;
+            devicesRepo = new DevicesRepository(_context);
         }
 
         // GET: Devices
+        public Task<IActionResult> Index()
+        {
+            return devicesRepo.Index(this);
+        }
+
+        // GET: Devices/Details/5
+        public Task<IActionResult> Details(Guid? id)
+        {
+            return devicesRepo.Details(id, this);
+        }
+
+        // GET: Devices/Create
+        public IActionResult Create()
+        {
+            return devicesRepo.Create(this);
+        }
+
+        // POST: Devices/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> Create([Bind("DeviceId,DeviceName,CategoryId,ZoneId,Status,IsActive,DateCreated")] Device device)
+        {
+            return devicesRepo.Create(device, this);
+        }
+
+        // GET: Devices/Edit/5
+        public Task<IActionResult> Edit(Guid? id)
+        {
+            return devicesRepo.Edit(id, this);
+        }
+
+        // POST: Devices/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> Edit(Guid id, [Bind("DeviceId,DeviceName,CategoryId,ZoneId,Status,IsActive,DateCreated")] Device device)
+        {
+            return devicesRepo.Edit(id, device, this);
+        }
+
+        // GET: Devices/Delete/5
+        public Task<IActionResult> Delete(Guid? id)
+        {
+            return devicesRepo.Delete(id, this);
+        }
+
+        // POST: Devices/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            return devicesRepo.DeleteConfirmed(id, this);
+        }
+
+        private bool DeviceExists(Guid id)
+        {
+            return devicesRepo.DeviceExists(id);
+        }
+
+        /*
+        ---------- OLD CODE (BACKUP) ----------
+        
+        // GET: Devices
         public async Task<IActionResult> Index()
         {
-            DevicesRepository devicesRepo = new DevicesRepository(_context);
             var results = devicesRepo.GetAll();
             return View(results);
             //var connectedOfficeContext = _context.Device.Include(d => d.Category).Include(d => d.Zone);
@@ -157,5 +224,6 @@ namespace DeviceManagement_WebApp.Controllers
         {
             return _context.Device.Any(e => e.DeviceId == id);
         }
+        */
     }
 }

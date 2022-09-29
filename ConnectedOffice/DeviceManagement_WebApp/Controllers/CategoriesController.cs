@@ -14,19 +14,85 @@ namespace DeviceManagement_WebApp.Controllers
     public class CategoriesController : Controller
     {
         private readonly ConnectedOfficeContext _context;
+        private CategoriesRepository categoriesRepo;
 
         public CategoriesController(ConnectedOfficeContext context)
         {
             _context = context;
+            categoriesRepo = new CategoriesRepository(_context);
         }
+
+        // GET: Categories
+        public Task<IActionResult> Index()
+        {
+            return categoriesRepo.Index(this);
+        }
+
+        // GET: Categories/Details/5
+        public Task<IActionResult> Details(Guid? id)
+        {
+            return categoriesRepo.Details(id, this);
+        }
+
+        // GET: Categories/Create
+        public IActionResult Create()
+        {
+            return categoriesRepo.Create(this);
+        }
+
+        // POST: Categories/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> Create([Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
+        {
+            return categoriesRepo.Create(category, this);
+        }
+
+        // GET: Categories/Edit/5
+        public Task<IActionResult> Edit(Guid? id)
+        {
+            return categoriesRepo.Edit(id, this);
+        }
+
+        // POST: Categories/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
+        {
+            return categoriesRepo.Edit(id, category, this);
+        }
+
+        // GET: Categories/Delete/5
+        public Task<IActionResult> Delete(Guid? id)
+        {
+            return categoriesRepo.Delete(id, this);
+        }
+
+        // POST: Categories/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            return categoriesRepo.DeleteConfirmed(id, this);
+        }
+
+        private bool CategoryExists(Guid id)
+        {
+            return categoriesRepo.CategoryExists(id);
+        }
+
+        /*
+         
+        ---------- OLD CODE (BACKUP) ----------
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            CategoriesRepository categoriesRepo = new CategoriesRepository(_context);
-            var results = categoriesRepo.GetAll();
-            return View(results);
-            //return View(await _context.Category.ToListAsync());
+            return View(await _context.Category.ToListAsync());
         }
 
         // GET: Categories/Details/5
@@ -145,5 +211,7 @@ namespace DeviceManagement_WebApp.Controllers
         {
             return _context.Category.Any(e => e.CategoryId == id);
         }
+         
+        */
     }
 }

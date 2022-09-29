@@ -14,19 +14,85 @@ namespace DeviceManagement_WebApp.Controllers
     public class ZonesController : Controller
     {
         private readonly ConnectedOfficeContext _context;
+        private ZonesRepository zonesRepo;
 
         public ZonesController(ConnectedOfficeContext context)
         {
             _context = context;
+            zonesRepo = new ZonesRepository(_context);
         }
 
         // GET: Zones
+        public Task<IActionResult> Index()
+        {
+            return zonesRepo.Index(this);
+        }
+
+        // GET: Zones/Details/5
+        public Task<IActionResult> Details(Guid? id)
+        {
+            return zonesRepo.Details(id, this);
+        }
+
+        // GET: Zones/Create
+        public IActionResult Create()
+        {
+            return zonesRepo.Create(this);
+        }
+
+        // POST: Zones/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> Create([Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
+        {
+            return zonesRepo.Create(zone, this);
+        }
+
+        // GET: Zones/Edit/5
+        public Task<IActionResult> Edit(Guid? id)
+        {
+            return zonesRepo.Edit(id, this);
+        }
+
+        // POST: Zones/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> Edit(Guid id, [Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
+        {
+            return zonesRepo.Edit(id, zone, this);
+
+        }
+
+        // GET: Zones/Delete/5
+        public Task<IActionResult> Delete(Guid? id)
+        {
+            return zonesRepo.Delete(id, this);
+        }
+
+        // POST: Zones/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            return zonesRepo.Delete(id, this);
+        }
+
+        private bool ZoneExists(Guid id)
+        {
+            return zonesRepo.ZoneExists(id);
+        }
+
+        /*
+        ---------- OLD CODE (BACKUP) ----------
+        
+        // GET: Zones
         public async Task<IActionResult> Index()
         {
-            ZonesRepository zonesRepo = new ZonesRepository(_context);
-            var results = zonesRepo.GetAll();
-            return View(results);
-            //return View(await _context.Zone.ToListAsync());
+            return View(await _context.Zone.ToListAsync());
         }
 
         // GET: Zones/Details/5
@@ -148,5 +214,7 @@ namespace DeviceManagement_WebApp.Controllers
         {
             return _context.Zone.Any(e => e.ZoneId == id);
         }
+
+        */
     }
 }
